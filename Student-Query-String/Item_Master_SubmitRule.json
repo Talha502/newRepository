@@ -1,0 +1,61 @@
+{
+  "submit_rules": {
+    "validations": [
+      {
+        "query": {
+          "table": "Unit_Validator",
+          "return": "'$data.unit' IN Unit_Validator.$data.category ? 1 : 0"
+        },
+        "result": 1,
+        "errorMessage": "$data.unit does not exist in respective category"
+      }
+    ],
+    "insert": [
+      {
+        "into": "Student",
+        "fields": {
+          "unit": "kg",
+          "category": {
+            "table": "Student",
+            "conditions": {
+              "and" : {
+                "education": "Masters",
+                "name": "Anas"
+              }
+            },
+            "return": "Student.education[0]"
+          }
+        },
+        "include": {"name":"Talha", "gender":"male"},
+        "exclude": ["unit"]
+      }
+    ],
+    "update":[
+      {
+        "in":"Student",
+        "_key":{
+          "table":"Student",
+          "conditions":{
+            "key":"720155"
+          },
+          "return":"Student.key[0]" 
+        },
+        "fields":{
+          "education":"Graduation",
+          "Designation":"Seinor Developer"
+        }
+      }
+    ],
+    "delete":[
+    {
+      "table":"Employee",
+      "remove":"Employee"
+    }
+    ]
+  },
+  "data": {
+    "unit": "kg",
+    "category": "Weight"
+  }
+}
+ 

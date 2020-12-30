@@ -1,0 +1,87 @@
+{
+    "submit_rules": {
+        "insert": {
+            "unit_of_measures": {
+                "fields": "$data"
+            }
+        },
+        "validations": [
+            {
+                "query": {
+                    "table": "Student",
+                    "conditions": {
+                        "and":           {
+                            "education": "Masters",
+                            "name": "Anas"
+                               }
+                            },
+                    "return": "Student.education"
+                },
+                "result": "Masters",
+                "errorMessage": "To get Admission in MS , Master is degree is must"
+            },
+            {
+                "query": {
+                    "table": "Student",
+                    "join": {
+                        "table": "Employee",
+                        "conditions": {
+                            "Employee.key": "Student.key"
+                        }
+                    },
+                    "return": "Employee.name"
+                },
+                "result": "Noman",
+                "errorMessage": "Same data between these two tables not found."
+            },
+            {
+                "query": {
+                    "table": "Student",
+                    "let": [
+                        {
+                            "letVariable": {
+                                "table": "Employee",
+                                "conditions": {
+                                    "Employee.key": "Student.key"
+                                },
+                                "return": "Employee"
+                            }
+                        },
+                        {
+                            "letVariable2": {
+                                "table": "users",
+                                "conditions": {
+                                    "users.key": "Student.key"
+                                },
+                                "return": "users"
+                            }
+                        }
+                    ],
+                    "return": {
+                        "Student": "Student",
+                        "letVariable": "letVariable",
+                        "letVariable2": "letVariable2"
+                    },
+                    "result": "MutipleData"
+                },
+                "result": "0",
+                "errorMessage": "Same data between these two tables not found."
+            },
+            {
+                "query": {
+                    "table": "Student",
+                    "collect": {
+                        "count": "length"
+                    },
+                    "return": "length"
+                },
+                "result": "7",
+                "errorMessage": "Fields are not present.Collection not implemented"
+            }
+        ]
+    },
+    "data": {
+        "education": "Masters",
+        "name": "Anas"
+    }
+}

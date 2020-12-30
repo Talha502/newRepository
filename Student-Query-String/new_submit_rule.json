@@ -1,0 +1,89 @@
+{
+    "submit_rule": {
+      "validation": [
+        {
+          "query": {
+            "table": "unit_of_measure",
+            "fields": [
+              "COUNT(unit_of_measure)"
+            ],
+            "conditions": {
+              "unit_of_measure": "$data.unit_of_measure",
+              "type": "Reference Unit of Measure of this category",
+              "category_of_UOM": "$data.category_of_UOM"
+            }
+          },
+          "result": 0,
+          "error_message": "$data.unit_of_measure is already Reference Unit of Measure of this category"
+        }
+      ],
+      "insert": {
+        "stocktable": {
+            "fields1":"$data",
+            "fields": {
+            "product_name": "$data.product_name",
+            "user_id": "$token.userid",
+            "data_and_time": "2019-12-12 11:33:00",
+            "product_status": {
+              "table": "product_status",
+              "fields": [
+                "status"
+              ],
+              "conditions": {
+                "field1": "abc",
+                "field2": {
+                  "table": "someothercollection",
+                  "field3": [
+                    "field2"
+                  ],
+                  "conditions": {}
+                }
+              }
+            }
+          },
+          "include": {},
+          "exclude": [
+            "Array Of Fields' Keys"
+          ]
+        }
+      },
+      "upsert": {
+        "table1": {
+          "upsert": {
+            "fields": "$data"
+          },
+          "insert": {
+            "fileds": {
+              "key": "value"
+            }
+          },
+          "update": {
+            "fields": {
+              "key": "value"
+            }
+          }
+        }
+      },
+      "update": {
+        "table1": {
+          "conditions": {
+            "fields": {
+              "field1": "something"
+            }
+          },
+          "set": {
+            "field2": "some other thing"
+          }
+        }
+      },
+      "delete": {
+        "table1": {
+          "conditions": {
+            "fields": {
+              "field1": "something"
+            }
+          }
+        }
+      }
+    }
+  }

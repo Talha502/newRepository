@@ -1,0 +1,206 @@
+                                                //SELECT QUERIES
+{
+    "table": "Student",
+    "conditions": {
+    "and" : {
+                "education": "Masters",
+                "name": "Anas"
+            }
+            },
+    "return": "Student.education"
+}
+//By giving this type of schema to client site..We get the following Query.
+// Query:FOR Student IN Student  FILTER Student.education == 'Masters' AND  Student.name == 'Anas'   RETURN Student.education                
+
+{             
+    "table": "Student",
+    "join": {
+        "table": "Employee",
+                "conditions": {
+                     "Employee.key": "Student.key"
+                              }
+            },
+    "return": "Employee.name"
+}
+//By giving this type of schema to client site..We get the following Query.
+// Query:FOR Student IN Student RETURN {Employee: (FOR Employee IN Employee FILTER Employee.key == Student.key RETURN Employee.name)}
+{      
+    "table": "Student" ,
+         "let":[
+                {
+                    "letVariable" : 
+                        {
+                            "table" : "Employee",
+                            "conditions" : {
+                                "Employee.key": "Student.key"
+                                },
+                        "return" : "Employee"
+                        }
+                },
+                {
+                    "letVariable2":    
+                        {
+                            "table" : "users",
+                            "conditions" : {
+                                "users.key": "Student.key"
+                                },
+                        "return" : "users"
+                        }
+                }
+                ],
+                    "return": {
+                        "Student": "Student",
+                        "letVariable" : "letVariable" ,
+                        "letVariable2" :"letVariable2"
+                    },
+                    "result" : "MutipleData"
+                
+            }
+//By giving this type of schema to client site..We get the following Query.
+//Query:FOR Student IN Student LET letVariable = (FOR Employee IN Employee  FILTER Employee.Employee.key == "Student.key"   RETURN Employee )LET letVariable2 = (FOR users IN users  FILTER users.users.key == "Student.key"   RETURN users ) RETURN { "Student "  : Student ,  "letVariable "  : letVariable ,  "letVariable2 "  : letVariable2 }
+{
+    "table": "Student",
+        "collect": 
+        {
+            "count": "length"
+        },
+    "return": "length"
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query:FOR Student IN Student COLLECT  WITH COUNT INTO length   RETURN length
+{
+    "table": "Unit_Validator",
+    "return": "'$data.unit' IN Unit_Validator.$data.category ? 1 : 0"
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query:FOR Unit_Validator IN Unit_Validator   RETURN 'kg' IN Unit_Validator.Weight ? 1 : 0
+
+                                    //Insert Query Case:1(Object within an Object)
+{
+    "into": "Student",
+        "fields": {
+              "unit": "kg",
+              "category": {
+                "table": "Student",
+                "conditions": {
+                    "and" : {
+                        "education": "Masters",
+                        "name": "Anas"
+                    }
+                },
+            "return": "Student.education[0]"
+          }
+        },
+        "include": {"name":"Talha", "gender":"male"},
+        "exclude": ["unit"]
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query: INSERT {"category":(FOR Student IN Student  FILTER Student.education == 'Masters' AND  Student.name == 'Anas'   RETURN Student.education)[0] ,"name":"Talha","gender":"male"} INTO Student
+
+                                            // INSERT QUERY Case:2(Simple String)
+{
+    "into": "Student",
+        "fields": {
+          "unit": "kg",
+          "category": "Weight"
+        },
+        "include": {"name":"Talha", "gender":"male"},
+        "exclude": ["unit"]
+}                                            
+//By giving this type of schema to client site..We get the following Query.
+//Query: INSERT {"category":"Weight","name":"Talha","gender":"male"} INTO Student
+
+                                            //INSERT QUERY Case:3(Update with Replacement Object)
+{
+    "into": "Student",
+        "fields": "$data",
+        "include": {"name":"Talha", "gender":"male"},
+        "exclude": ["unit"]
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query: INSERT {"category":{"unit":"kg","category":"Weight","length":78,"assignedCategory":"1,2,3"},"name":"Talha","gender":"male"} INTO Student
+
+
+                                            // UPDATE QUERY CASE:1(key within Object)
+{
+    "in":"Student",
+       "_key":{
+          "table":"Student",
+          "conditions":{
+            "key":"720155"
+          },
+          "return":"Student.key[0]" 
+        },
+        "fields":{
+          "education":"Graduation",
+          "Designation":"Seinor Developer"
+        }
+}                                
+//By giving this type of schema to client site..We get the following Query.
+//Query: UPDATE { _key :( FOR Student IN Student  FILTER Student.key == "720155"   RETURN Student.key)[0] } WITH {"education":"Graducation","Designation":"Seinor Developer"} IN Student
+
+
+                                            // UPDATE QUERY CASE:2(Object within Object)
+{
+    "in" : "Employee",
+        "conditions":{
+          "and":{
+            "name": "Aleem",
+            "lastname":"Azam"
+          }
+        },
+          "fields" :{
+            "education" : {
+              "table" : "Student",
+              "conditions":{
+                "and" : {
+                  "education": "Intermediate",
+                  "name": "Kevin"
+                }
+              },
+              "return":"Student.education[0]"
+            },
+            "age" : 45,
+            "gender" : "m" 
+          },
+          "include" :{"Designation" : "Developer","University":"NUST"},
+          "exclude":["age"]
+}
+
+//By giving this type of schema to client site..We get the following Query.
+//Query: FOR Employee IN Employee  FILTER Employee.name == 'Aleem' AND  Employee.lastname == 'Azam'  UPDATE Employee WITH {"education":(FOR Student IN Student  FILTER Student.education == 'Intermediate' AND  Student.name == 'Kevin'   RETURN Student.education)[0] ,"gender":"m","Designation":"Developer","University":"NUST"} IN Employee
+
+                                            // UPDATE QUERY CASE:3(Simple String)
+
+{
+"in":"Employee",
+    "_key":"1617668",
+        "fields":{
+          "Designation":"MD",
+          "age":22
+        }
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query:UPDATE {_key :  '1617668' }  WITH {"Designation":"MD","age":22} IN Employee
+
+                                            // UPDATE QUERY CASE :4(Use of prefix)
+{
+"in":"Employee",
+    "_key":"1617668",
+        "fields":"$data"
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query: UPDATE {_key: '1617668' }  WITH {"Designation":{"unit":"kg","category":"Weight","length":78,"assignedCategory":"1,2,3"},"age":22} IN Employee
+
+                                                // DELETE QUERY
+{   
+    "table":"Employee",
+        "conditions":{
+            "and":{
+                "name":"Umer",
+                "Designation":"Seinor Developer"
+            }
+      }
+}
+//By giving this type of schema to client site..We get the following Query.
+//Query: FOR Employee IN Employee  FILTER Employee.name == 'Umer' AND  Employee.Designation == 'Seinor Developer'   REMOVE Employee IN Employee
