@@ -124,7 +124,7 @@ function Update_of_values(sc, ro) {
     resultReturnUpdate = reUpdate.replace(/,\s*$/, "");
     returnUpdate = 'return ' + '{' + resultReturnUpdate + '}';
     finalUpdateQuery = letupdateQuery + returnUpdate;
-//    console.log(finalUpdateQuery);
+   console.log(finalUpdateQuery);
 }
 function Delete_of_values(sc, ro) {
     let del = sc.submit_rules.delete;
@@ -147,7 +147,7 @@ function Delete_of_values(sc, ro) {
     resultReturnDelete = reDelete.replace(/,\s*$/, "");
     returnDelete = 'return ' + '{' + resultReturnDelete + '}';
     finalDeleteQuery = letDeleteQuery + returnDelete;
-    // console.log(finalDeleteQuery);
+    console.log(finalDeleteQuery);
 }
 module.exports = {
     process_submit_rule: process_submit_rule

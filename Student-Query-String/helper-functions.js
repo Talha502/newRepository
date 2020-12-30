@@ -12,7 +12,7 @@ function replaceValuesOfObject(object, replacementObject, iteration = false, cur
     getObjectKeys.forEach(key => {
         let keyValue = object[key];
         if (typeof keyValue === 'object') {
-//            console.log(keyValue);
+           console.log(keyValue);
             let jsp = objectOfKeys[key] + "/" + key;
             replaceValuesOfObject(keyValue, replacementObject, false, jsp);
         }
