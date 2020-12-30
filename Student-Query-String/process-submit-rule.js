@@ -63,7 +63,7 @@ function isValid(sc, replacementObject, cb) {
     resultreturn = re.replace(/,\s*$/, "");
     _return1 = ' RETURN ' + '{' + resultreturn + '}';
     var finalLetQuery = letquery + _return1;
-    // console.log(finalLetQuery);
+    console.log(finalLetQuery);
     db.query(finalLetQuery).then(
         es => es.all()).then(
             key => {
